@@ -100,29 +100,6 @@ class TLDetector(object):
 
         self.has_image = True
         self.image_buffer.append(msg)
-        # self.camera_image = msg
-
-        # light_wp, state = self.process_traffic_lights()
-
-        # # print "light_wp: " , light_wp, " state: " , state
-
-        # '''
-        # Publish upcoming red lights at camera frequency.
-        # Each predicted state has to occur `STATE_COUNT_THRESHOLD` number
-        # of times till we start using it. Otherwise the previous stable state is
-        # used.
-        # '''
-        # if self.state != state:
-        #     self.state_count = 0
-        #     self.state = state
-        # elif self.state_count >= STATE_COUNT_THRESHOLD:
-        #     self.last_state = self.state
-        #     light_wp = light_wp if state == TrafficLight.RED else -1
-        #     self.last_wp = light_wp
-        #     self.upcoming_red_light_pub.publish(Int32(light_wp))
-        # else:
-        #     self.upcoming_red_light_pub.publish(Int32(self.last_wp))
-        # self.state_count += 1
 
 
     def process_image(self):
@@ -131,11 +108,6 @@ class TLDetector(object):
         if len(self.image_buffer) > 0:
             self.camera_image = self.image_buffer.pop()
             self.image_buffer = []   # dump the others
-        self.camera_image = msg
-
-        light_wp, state = self.process_traffic_lights()
-
-        # print "light_wp: " , light_wp, " state: " , state
 
         light_wp, state = self.process_traffic_lights()
         if self.state != state:
