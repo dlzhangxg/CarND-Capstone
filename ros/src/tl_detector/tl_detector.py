@@ -131,6 +131,11 @@ class TLDetector(object):
         if len(self.image_buffer) > 0:
             self.camera_image = self.image_buffer.pop()
             self.image_buffer = []   # dump the others
+        self.camera_image = msg
+
+        light_wp, state = self.process_traffic_lights()
+
+        # print "light_wp: " , light_wp, " state: " , state
 
         light_wp, state = self.process_traffic_lights()
         if self.state != state:
@@ -187,15 +192,11 @@ class TLDetector(object):
         # testing the detection result:
         # based on the test, gpu performance for one iamges is about 1 seconds, 
         # add some buffer here to avoid the images flood to the classfication
-        if time.time() > self.base_timer + 0.1:
-            state, d_time = self.light_classifier.get_classification(cv_image)
-            self.previous_state = state
-            rospy.logdebug("Detection Result: %s, time: %s" % (state, d_time))
-            self.base_timer = time.time()   
-            return state
-        else:
-            return self.previous_state
-
+        state, d_time = self.light_classifier.get_classification(cv_image)
+        self.previous_state = state
+        rospy.logdebug("Detection Result: %s, time: %s" % (state, d_time))
+        self.base_timer = time.time()   
+        return state
 
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its
